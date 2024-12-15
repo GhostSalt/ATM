@@ -6,8 +6,8 @@ using UnityEngine;
 using KModkit;
 using Rnd = UnityEngine.Random;
 
-public class TemplateScript : MonoBehaviour {
-
+public class ATMScript : MonoBehaviour
+{
     static int _moduleIdCounter = 1;
     int _moduleID = 0;
 
