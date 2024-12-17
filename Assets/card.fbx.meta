@@ -1,78 +1,26 @@
 fileFormatVersion: 2
-guid: f38b878a0cc552a449ae09b676a6fbbd
+guid: 4d4df6144347b774e81af9364148798f
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: //RootNode
-    100002: Cube
-    100004: Cube.001
-    100006: Display Base
-    100008: Key 1 to 1
-    100010: Key 1 to 1 Surface
-    100012: Key 2 to 1
-    100014: Key 2 to 1 Surface
-    100016: Keypad Base
-    100018: Key 1 to 1 HL
-    100020: Key 2 to 1 HL
-    100022: Hole
-    100024: Slot
-    100026: Card Reader
-    400000: //RootNode
-    400002: Cube
-    400004: Cube.001
-    400006: Display Base
-    400008: Key 1 to 1
-    400010: Key 1 to 1 Surface
-    400012: Key 2 to 1
-    400014: Key 2 to 1 Surface
-    400016: Keypad Base
-    400018: Key 1 to 1 HL
-    400020: Key 2 to 1 HL
-    400022: Hole
-    400024: Slot
-    400026: Card Reader
+    100000: Bottom Face
+    100002: //RootNode
+    100004: Edge
+    100006: Top Face
+    400000: Bottom Face
+    400002: //RootNode
+    400004: Edge
+    400006: Top Face
     2100000: No Name
-    2300000: //RootNode
-    2300002: Cube
-    2300004: Cube.001
-    2300006: Display Base
-    2300008: Key 1 to 1
-    2300010: Key 1 to 1 Surface
-    2300012: Key 2 to 1
-    2300014: Key 2 to 1 Surface
-    2300016: Keypad Base
-    2300018: Key 1 to 1 HL
-    2300020: Key 2 to 1 HL
-    2300022: Hole
-    2300024: Slot
-    2300026: Card Reader
-    3300000: //RootNode
-    3300002: Cube
-    3300004: Cube.001
-    3300006: Display Base
-    3300008: Key 1 to 1
-    3300010: Key 1 to 1 Surface
-    3300012: Key 2 to 1
-    3300014: Key 2 to 1 Surface
-    3300016: Keypad Base
-    3300018: Key 1 to 1 HL
-    3300020: Key 2 to 1 HL
-    3300022: Hole
-    3300024: Slot
-    3300026: Card Reader
-    4300000: Cube
-    4300002: Cube.001
-    4300004: Display Base
-    4300006: Key 1 to 1
-    4300008: Key 1 to 1 Surface
-    4300010: Key 2 to 1
-    4300012: Key 2 to 1 Surface
-    4300014: Keypad Base
-    4300016: Key 1 to 1 HL
-    4300018: Key 2 to 1 HL
-    4300020: Slot
-    4300022: Hole
-    4300024: Card Reader
+    2300000: Bottom Face
+    2300002: Edge
+    2300004: Top Face
+    3300000: Bottom Face
+    3300002: Edge
+    3300004: Top Face
+    4300000: Edge
+    4300002: Top Face
+    4300004: Bottom Face
   externalObjects: {}
   materials:
     importMaterials: 1
