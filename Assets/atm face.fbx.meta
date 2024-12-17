@@ -17,6 +17,7 @@ ModelImporter:
     100022: Hole
     100024: Slot
     100026: Card Reader
+    100028: Card Reader HL
     400000: //RootNode
     400002: Cube
     400004: Cube.001
@@ -31,6 +32,7 @@ ModelImporter:
     400022: Hole
     400024: Slot
     400026: Card Reader
+    400028: Card Reader HL
     2100000: No Name
     2300000: //RootNode
     2300002: Cube
@@ -46,6 +48,7 @@ ModelImporter:
     2300022: Hole
     2300024: Slot
     2300026: Card Reader
+    2300028: Card Reader HL
     3300000: //RootNode
     3300002: Cube
     3300004: Cube.001
@@ -60,6 +63,7 @@ ModelImporter:
     3300022: Hole
     3300024: Slot
     3300026: Card Reader
+    3300028: Card Reader HL
     4300000: Cube
     4300002: Cube.001
     4300004: Display Base
@@ -73,6 +77,7 @@ ModelImporter:
     4300020: Slot
     4300022: Hole
     4300024: Card Reader
+    4300026: Card Reader HL
   externalObjects: {}
   materials:
     importMaterials: 1
