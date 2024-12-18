@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using KModkit;
 using Rnd = UnityEngine.Random;
+using UnityEngine.UI;
 
 public class ATMScript : MonoBehaviour
 {
@@ -20,12 +21,41 @@ public class ATMScript : MonoBehaviour
     public Transform DisplayAudioTransform;
     public Transform CardTransform;
     public MeshRenderer[] CardFaceRends;
+    public TextMesh PaperText;
+
+    public Image BGImage;
+    public Image ImageTemplate;
+    public Text TextTemplate;
 
     private Coroutine[] DisplayButtonAnimCoroutines;
     private Coroutine[] KeypadKeyAnimCoroutines;
     private Vector3 CardInitScale;
     private float DisplayButtonInitPos;
     private float KeypadKeyInitPos;
+
+    private Menu CurrentMenu;
+
+    private List<int> CardNumber = new List<int>();
+    private List<int> AccountNumber = new List<int>();
+    private List<int> Expiry = new List<int>();
+    private List<int> CVV2 = new List<int>();
+
+    private string FormatCardNumber(List<int> num)
+    {
+        var output = new List<string>();
+        for (int i = 0; i < 4; i++)
+        {
+            output.Add("");
+            for (int j = 0; j < 4; j++)
+                output[i] += num[(i * 4) + j];
+        }
+        return output.Join(" ");
+    }
+
+    private string FormatExpiry(List<int> expiry)
+    {
+        return expiry[0] + "/" + expiry[1];
+    }
 
     void Awake()
     {
@@ -54,6 +84,13 @@ public class ATMScript : MonoBehaviour
         CardReader.OnInteract += delegate { InsertCard(); return false; };
         CardInitScale = CardTransform.localScale;
         CardTransform.localScale = Vector3.zero;
+
+        GenerateCardInfo();
+        InitialiseMenu();
+
+        PaperText.transform.parent.localEulerAngles = new Vector3(90, Rnd.Range(-5f, 5f), 0);
+
+        Module.OnActivate += delegate { CurrentMenu.Activate(); BGImage.transform.localScale = Vector3.one; };
     }
 
     // Use this for initialization
@@ -66,6 +103,39 @@ public class ATMScript : MonoBehaviour
     void Update()
     {
 
+    }
+
+    private void InitialiseMenu()
+    {
+        BGImage.transform.localScale = ImageTemplate.transform.localScale = TextTemplate.transform.localScale = Vector3.zero;
+        CurrentMenu = new InitialMenu(ImageTemplate, TextTemplate);
+    }
+
+    private void GenerateCardInfo()
+    {
+        CardNumber = new List<int>();
+        AccountNumber = new List<int>();
+        Expiry = new List<int>();
+        CVV2 = new List<int>();
+
+        for (int i = 0; i < 16; i++)
+            CardNumber.Add(Rnd.Range(0, 10));
+
+        for (int i = 0; i < 8; i++)
+            AccountNumber.Add(Rnd.Range(0, 10));
+
+        Expiry.Add(Rnd.Range(0, 12));
+        Expiry.Add(Rnd.Range(0, 100));
+
+        for (int i = 0; i < 3; i++)
+            CVV2.Add(Rnd.Range(0, 10));
+
+        DisplayCardInfo();
+    }
+
+    private void DisplayCardInfo()
+    {
+        PaperText.text = "Card number:\n\n\n" + FormatCardNumber(CardNumber) + "\n\n\n\nAccount number:\n\n\n" + AccountNumber.Join("") + "\n\n\n\nExpiry: " + FormatExpiry(Expiry) + "\n\n\n\nCVV2: " + CVV2.Join("");
     }
 
     private void DisplayButtonPress(int pos)
@@ -121,28 +191,31 @@ public class ATMScript : MonoBehaviour
     private IEnumerator InsertCardAnim(float introDuration = 0.5f, float insertDuration = 0.35f, float takeDuration = 0.5f)
     {
         Vector3 introEnd = new Vector3(0.0425f, 0.06f, -0.0095f);
-        Vector3 introStart = introEnd + new Vector3(0, 2f, -0.2f);
+        Vector3 introStart = introEnd + new Vector3(0, 2f, -0.5f);
 
         Vector3 insertEnd = introEnd - Vector3.up * 0.03f;
         Vector3 animEnd = insertEnd - Vector3.up * 0.05f;
 
         CardTransform.localPosition = introStart;
+        CardTransform.localEulerAngles = Vector3.up * 90;
 
         float timer = 0;
         while (timer < introDuration)
         {
-            CardTransform.localPosition = new Vector3(introStart.x, Easing.OutCubic(timer, introStart.y, introEnd.y, introDuration), Easing.OutExpo(timer, introStart.z, introEnd.z, introDuration));
             yield return null;
             timer += Time.deltaTime;
+            CardTransform.localPosition = new Vector3(introStart.x, Easing.OutCubic(timer, introStart.y, introEnd.y, introDuration), Easing.OutExpo(timer, introStart.z, introEnd.z, introDuration));
+            CardTransform.localEulerAngles = new Vector3(0, 90, Easing.OutQuad(timer, 0, 90, introDuration));
         }
         CardTransform.localPosition = introEnd;
+        CardTransform.localEulerAngles = new Vector3(0, 90, 90);
 
         timer = 0;
         while (timer < insertDuration)
         {
-            CardTransform.localPosition = new Vector3(introEnd.x, Easing.InSine(timer, introEnd.y, insertEnd.y, insertDuration), introEnd.z);
             yield return null;
             timer += Time.deltaTime;
+            CardTransform.localPosition = new Vector3(introEnd.x, Easing.InSine(timer, introEnd.y, insertEnd.y, insertDuration), introEnd.z);
         }
         CardTransform.localPosition = insertEnd;
 
@@ -152,10 +225,13 @@ public class ATMScript : MonoBehaviour
         timer = 0;
         while (timer < takeDuration)
         {
-            CardTransform.localPosition = new Vector3(insertEnd.x, Easing.InSine(timer, insertEnd.y, animEnd.y, takeDuration), insertEnd.z);
             yield return null;
             timer += Time.deltaTime;
+            CardTransform.localPosition = new Vector3(insertEnd.x, Mathf.Lerp(insertEnd.y, animEnd.y, timer / takeDuration), insertEnd.z);
         }
         CardTransform.localPosition = animEnd;
+
+        yield return new WaitForSeconds(0.3f);
+        CurrentMenu.RegisterInput("card insert");
     }
 }
