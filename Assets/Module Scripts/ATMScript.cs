@@ -91,6 +91,15 @@ public class ATMScript : MonoBehaviour
         PaperText.transform.parent.localEulerAngles = new Vector3(90, Rnd.Range(-5f, 5f), 0);
 
         Module.OnActivate += delegate { CurrentMenu.Activate(); BGImage.transform.localScale = Vector3.one; };
+
+        CurrentMenu.OnChangeMenus += type =>
+        {
+            CurrentMenu.Destroy();
+
+            var constructor = type.GetConstructors().FirstOrDefault();
+            CurrentMenu = (Menu)constructor.Invoke(new object[] { ImageTemplate, TextTemplate });
+
+            CurrentMenu.Activate(); };
     }
 
     // Use this for initialization
@@ -156,6 +165,11 @@ public class ATMScript : MonoBehaviour
         if (KeypadKeyAnimCoroutines[pos] != null)
             StopCoroutine(KeypadKeyAnimCoroutines[pos]);
         KeypadKeyAnimCoroutines[pos] = StartCoroutine(ButtonPressAnim(KeypadKeys[pos].transform, KeypadKeyInitPos, 0.002f));
+
+        if (pos < 10)
+            CurrentMenu.RegisterInput("keypad num " + (pos + 1) % 10);
+        else
+            CurrentMenu.RegisterInput("keypad side " + (pos - 10));
     }
 
     private void InsertCard()

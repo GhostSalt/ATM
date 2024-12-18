@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InitialMenu : Menu {
-
+public class InitialMenu : Menu
+{
 	private Image Logo;
 	private Text Text;
 
-	public InitialMenu(Image imageTemplate, Text textTemplate)
-	{
+	public InitialMenu(Image imageTemplate, Text textTemplate) : base(imageTemplate, textTemplate)
+    {
 		Logo = Instantiate(imageTemplate, imageTemplate.transform.parent);
         Logo.transform.localScale = Vector3.zero;
 
@@ -25,9 +25,14 @@ public class InitialMenu : Menu {
         Text.transform.localScale = Vector3.one;
     }
 
-    protected override void RegisterCardInsert()
+    public override void Destroy()
     {
-        Debug.Log(Time.time);
+        Destroy(Logo.gameObject);
+        Destroy(Text.gameObject);
     }
 
+    protected override void RegisterCardInsert()
+    {
+        ChangeMenu(typeof(PINMenu));
+    }
 }
