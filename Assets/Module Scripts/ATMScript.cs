@@ -22,6 +22,7 @@ public class ATMScript : MonoBehaviour
     public Transform CardTransform;
     public MeshRenderer[] CardFaceRends;
     public TextMesh PaperText;
+    public Sprite[] AllSprites;
 
     public Image BGImage;
     public Image ImageTemplate;
@@ -34,6 +35,7 @@ public class ATMScript : MonoBehaviour
     private float KeypadKeyInitPos;
 
     private Menu CurrentMenu;
+    private GameObject CurrentMenuObject;
 
     private List<int> CardNumber = new List<int>();
     private List<int> AccountNumber = new List<int>();
@@ -90,16 +92,12 @@ public class ATMScript : MonoBehaviour
 
         PaperText.transform.parent.localEulerAngles = new Vector3(90, Rnd.Range(-5f, 5f), 0);
 
-        Module.OnActivate += delegate { CurrentMenu.Activate(); BGImage.transform.localScale = Vector3.one; };
+        Module.OnActivate += delegate { CurrentMenu.Activate(true); BGImage.transform.localScale = Vector3.one; };
 
-        CurrentMenu.OnChangeMenus += type =>
-        {
-            CurrentMenu.Destroy();
+        CurrentMenu.OnChangeMenus += HandleMenuChange;
 
-            var constructor = type.GetConstructors().FirstOrDefault();
-            CurrentMenu = (Menu)constructor.Invoke(new object[] { ImageTemplate, TextTemplate });
-
-            CurrentMenu.Activate(); };
+        Module.GetComponent<KMSelectable>().OnFocus += delegate { CurrentMenu.RegisterInput("module focus"); };
+        Module.GetComponent<KMSelectable>().OnDefocus += delegate { CurrentMenu.RegisterInput("module defocus"); };
     }
 
     // Use this for initialization
@@ -114,10 +112,30 @@ public class ATMScript : MonoBehaviour
 
     }
 
+    private void HandleMenuChange(Type type)
+    {
+        CurrentMenu.Destroy();
+        Destroy(CurrentMenuObject);
+
+        CurrentMenuObject = new GameObject("Current Menu");
+        CurrentMenuObject.transform.parent = Module.transform;
+
+        CurrentMenu.OnChangeMenus -= HandleMenuChange;
+        CurrentMenu = (Menu)CurrentMenuObject.AddComponent(type);
+        CurrentMenu.Construct(ImageTemplate, TextTemplate, AllSprites);
+        CurrentMenu.OnChangeMenus += HandleMenuChange;
+
+        CurrentMenu.Activate(false);
+    }
+
     private void InitialiseMenu()
     {
         BGImage.transform.localScale = ImageTemplate.transform.localScale = TextTemplate.transform.localScale = Vector3.zero;
-        CurrentMenu = new InitialMenu(ImageTemplate, TextTemplate);
+
+        CurrentMenuObject = new GameObject("Current Menu");
+        CurrentMenuObject.transform.parent = Module.transform;
+        CurrentMenu = CurrentMenuObject.AddComponent<InitialMenu>();
+        CurrentMenu.Construct(ImageTemplate, TextTemplate, AllSprites);
     }
 
     private void GenerateCardInfo()

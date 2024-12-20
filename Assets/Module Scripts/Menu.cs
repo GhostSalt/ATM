@@ -9,16 +9,24 @@ public abstract class Menu : MonoBehaviour
 {
     protected Image ImageTemplate;
     protected Text TextTemplate;
+    private Sprite[] AllSprites;
 
-    public Menu(Image imageTemplate, Text textTemplate)
+    public virtual void Construct(Image imageTemplate, Text textTemplate, Sprite[] allSprites)
     {
         ImageTemplate = imageTemplate;
         TextTemplate = textTemplate;
+        AllSprites = allSprites;
     }
 
     public void RegisterInput(string input)
     {
-        if (Regex.IsMatch(input, "^arrow [0-7]$"))
+        if (Regex.IsMatch(input, "^card insert$"))
+            RegisterCardInsert();
+        else if (Regex.IsMatch(input, "^module focus"))
+            RegisterModuleFocus();
+        else if (Regex.IsMatch(input, "^module defocus$"))
+            RegisterModuleDefocus();
+        else if (Regex.IsMatch(input, "^arrow [0-7]$"))
         {
             int value = int.Parse(Regex.Matches(input, "[0-7]")[0].Value);
             RegisterArrowPress(value);
@@ -33,9 +41,13 @@ public abstract class Menu : MonoBehaviour
             int value = int.Parse(Regex.Matches(input, "[0-2]")[0].Value);
             RegisterSideKeyPress(value);
         }
-        else if (Regex.IsMatch(input, "^card insert$"))
-            RegisterCardInsert();
     }
+
+    protected virtual void RegisterModuleFocus() { }
+
+    protected virtual void RegisterModuleDefocus() { }
+
+    protected virtual void RegisterCardInsert() { }
 
     protected virtual void RegisterArrowPress(int pos) { }
 
@@ -43,9 +55,7 @@ public abstract class Menu : MonoBehaviour
 
     protected virtual void RegisterSideKeyPress(int pos) { }
 
-    protected virtual void RegisterCardInsert() { }
-
-    public abstract void Activate();
+    public abstract void Activate(bool isInitialMenu);
 
     public abstract void Destroy();
 
@@ -54,5 +64,13 @@ public abstract class Menu : MonoBehaviour
     protected void ChangeMenu(Type type)
     {
         OnChangeMenus?.Invoke(type);
+    }
+
+    protected Sprite FindSprite(string name)
+    {
+        foreach (var sprite in AllSprites)
+            if (sprite.name == name)
+                return sprite;
+        return null;
     }
 }
