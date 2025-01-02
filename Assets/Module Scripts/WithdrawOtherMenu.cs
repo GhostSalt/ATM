@@ -9,8 +9,16 @@ public class WithdrawOtherMenu : Menu
     private Text PINText;
 
     private string UserInput = "";
-    private string ActualPIN = "1234";
-    private string TopMessage = "Please enter your <b>PIN</b>\nand press <b>ENTER</b>.\n\n";
+    private string ExpectedInput = "12345";
+    private string TopMessage = "Enter required amount\non the keypad:\n\n\n\n";
+
+    private string FormatCurrency(string userInput)
+    {
+        if (UserInput.Length <= 2)
+            return "£0." + "00".Substring(0, 2 - userInput.Length) + userInput;
+        else
+            return "£" + userInput.Substring(0, userInput.Length - 2) + "." + userInput.Substring(userInput.Length - 2, 2);
+    }
 
     public override void Construct(int bank, Image imageTemplate, Text textTemplate, Sprite[] allSprites, Font[] allFonts)
     {
@@ -22,9 +30,9 @@ public class WithdrawOtherMenu : Menu
         RequestText.text = TopMessage;
 
         PINText = CreateText();
-        PINText.fontSize = 40;
+        PINText.fontSize = 35;
         PINText.transform.localScale = Vector3.zero;
-        DisplayStars();
+        SetDisplayText();
     }
 
     public override void Activate(bool isInitialMenu)
@@ -39,20 +47,20 @@ public class WithdrawOtherMenu : Menu
         Destroy(PINText.gameObject);
     }
 
-    private void DisplayStars()
+    private void SetDisplayText()
     {
-        var stars = "";
-        for (int i = 0; i < UserInput.Length; i++)
-            stars += "*";
-        PINText.text = "\n\n\n" + stars;
+        PINText.text = "\n\n\n" + FormatCurrency(UserInput);
     }
 
     protected override bool RegisterNumKeyPress(int pos)
     {
-        if (UserInput.Length < 4)
+        if (UserInput.Length < 5)
         {
-            UserInput += pos;
-            DisplayStars();
+            if (UserInput == "0")
+                UserInput = pos.ToString();
+            else
+                UserInput += pos;
+            SetDisplayText();
             return true;
         }
         return false;
@@ -62,7 +70,7 @@ public class WithdrawOtherMenu : Menu
     {
         if (pos == 0)
         {
-            ChangeMenu(typeof(TransToInitialMenuMenu));
+            ChangeMenu(typeof(TransToWithdrawalMenuMenu));
             return true;
         }
         else if (pos == 1)
@@ -70,16 +78,14 @@ public class WithdrawOtherMenu : Menu
             if (UserInput.Length > 0)
             {
                 UserInput = UserInput.Substring(0, UserInput.Length - 1);
-                DisplayStars();
+                SetDisplayText();
                 return true;
             }
         }
         else
         {
-            if (UserInput == ActualPIN)
-                ChangeMenu(typeof(TransToMainMenuMenu));
-            else
-                RequestText.text = "PIN incorrect.\n\n" + TopMessage + "\n\n";
+            if (UserInput == ExpectedInput)
+                ChangeMenu(typeof(DispenseCashMenu));
             return true;
         }
         return false;

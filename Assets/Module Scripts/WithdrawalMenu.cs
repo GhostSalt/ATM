@@ -12,10 +12,10 @@ public class WithdrawalMenu : DecisionMenu {
     {
         base.Construct(bank, imageTemplate, textTemplate, allSprites, allFonts);
 
-        Assign("Select amount",
-            new[] { "£10", "£20", "£30", "£50", "£100", "£200", "Other", "Back" },
+        Assign("Select required amount",
+            new[] { "£5", "£10", "£20", "£30", "£50", "£100", "Other", "Back" },
             new[] { typeof(DispenseCashMenu), typeof(DispenseCashMenu), typeof(DispenseCashMenu), typeof(DispenseCashMenu),
-                    typeof(DispenseCashMenu), typeof(DispenseCashMenu), typeof(WithdrawOtherMenu), typeof(TransToMainMenuMenu) },
-            Enumerable.Range(0, 8).Where(x => x != CorrectAnswer).ToList());
+                    typeof(DispenseCashMenu), typeof(DispenseCashMenu), typeof(WithdrawOtherMenu), typeof(MainMenu) },
+            Enumerable.Range(0, 8).Where(x => x != CorrectAnswer && x < 6).ToList());
     }
 }

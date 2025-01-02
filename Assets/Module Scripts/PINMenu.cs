@@ -10,7 +10,7 @@ public class PINMenu : Menu
 
     private string UserInput = "";
     private string ActualPIN = "1234";
-    private string TopMessage = "Please enter your <b>PIN</b>\nand press <b>ENTER</b>.\n\n";
+    private string TopMessage = "Please enter your PIN\nand press ENTER.\n\n\n";
 
     public override void Construct(int bank, Image imageTemplate, Text textTemplate, Sprite[] allSprites, Font[] allFonts)
     {
@@ -22,7 +22,7 @@ public class PINMenu : Menu
         RequestText.text = TopMessage;
 
         PINText = CreateText();
-        PINText.fontSize = 40;
+        PINText.fontSize = 35;
         PINText.transform.localScale = Vector3.zero;
         DisplayStars();
     }
@@ -43,7 +43,7 @@ public class PINMenu : Menu
     {
         var stars = "";
         for (int i = 0; i < UserInput.Length; i++)
-            stars += "*";
+            stars += "●";
         PINText.text = "\n\n\n" + stars;
     }
 

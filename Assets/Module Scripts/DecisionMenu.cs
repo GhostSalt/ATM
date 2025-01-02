@@ -51,7 +51,7 @@ public abstract class DecisionMenu : Menu
 
     protected void Assign(string question, string[] answers, Type[] links, List<int> incorrectAnswers = null)
     {
-        Question.text = "<b>" + question + "</b>";
+        Question.text = question;
 
         for (int i = 0; i < Mathf.Min(answers.Length, Answers.Count()); i++)
             Answers[i].text = answers[i];

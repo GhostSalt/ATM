@@ -10,7 +10,7 @@ public class MainMenu : DecisionMenu {
         base.Construct(bank, imageTemplate, textTemplate, allSprites, allFonts);
 
         Assign("Select an option",
-            new[] { "Cash Withdrawal", "Check Balance", "", "", "", "", "", "Return Card" },
-            new[] { typeof(WithdrawalMenu), typeof(TransToAccountBalanceMenuMenu), null, null, null, null, null, typeof(TransToInitialMenuMenu) });
+            new[] { "Cash", "Cash With Receipt", "Check Balance", "", "", "", "", "Return Card" },
+            new[] { typeof(WithdrawalMenu), typeof(WithdrawalMenu), typeof(TransToAccountBalanceMenuMenu), null, null, null, null, typeof(TransToInitialMenuMenu) });
     }
 }
